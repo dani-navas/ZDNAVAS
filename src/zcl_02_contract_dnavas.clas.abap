@@ -1,5 +1,4 @@
-CLASS zcl_02_contract_dnavas DEFINITION PUBLIC FINAL CREATE PUBLIC .
-
+CLASS zcl_02_contract_dnavas DEFINITION PUBLIC FINAL CREATE public.
   PUBLIC SECTION. "puede acceder cualquier class
 *Las constants són estaticos por defecto
     CONSTANTS: BEGIN OF cs_currency,
@@ -26,7 +25,8 @@ CLASS zcl_02_contract_dnavas DEFINITION PUBLIC FINAL CREATE PUBLIC .
     CLASS-DATA currency TYPE currencysap .  "atributo estatico las estaticas siempre empiezan por CLASS-DATA
     CLASS-DATA empresa  TYPE string READ-ONLY VALUE 'Logali Group' ."Variable estatico solo de lectura no se puede cambiar el valor y solo puede hacer en el PUBLIC SECTION
 
-    " si en el parametro del method se pone la palabra VALUE(parámetro) se le pasa el valor por valor y no por referencia
+
+" si en el parametro del method se pone la palabra VALUE(parámetro) se le pasa el valor por valor y no por referencia
 *Diferencia:
 *1:VALUE(parámetro) crea una copia local, protegiendo la variable original de cambios el valor sigue siendo el original
 *2:PARÁMETRO el puntero de memoria, reflejando cualquier cambio inmediatamente al parámetro y el valor cambia
@@ -58,6 +58,9 @@ CLASS zcl_02_contract_dnavas DEFINITION PUBLIC FINAL CREATE PUBLIC .
                           EXPORTING lt_adress TYPE tty_adress.
 
     METHODS get_sales_org EXPORTING sales_org TYPE string.
+
+
+   CLASS-METHODS geT_instace EXPORTING e_instace type ref to zcl_02_contract_dnavas.
 
 
   PROTECTED SECTION. "pueden acceder la class general y los hijos
@@ -165,6 +168,10 @@ CLASS zcl_02_contract_dnavas IMPLEMENTATION.
 
   METHOD set_adress.
 
+  ENDMETHOD.
+
+  METHOD get_instace.
+    e_instace = new zcl_02_contract_dnavas( ).
   ENDMETHOD.
 
 ENDCLASS.
