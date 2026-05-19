@@ -91,21 +91,21 @@ CLASS zcl_01_exec_dnavas IMPLEMENTATION.
 *Los Constructores estaticos se pasan los datos SOLO UNA VEZ
 *    out->write( zcl_lab_03_emplyee_dnavas=>l_log ).
 
-    DATA i_employee_id TYPE string.
-    DATA i_date TYPE string.
-*Los Constructores de instancia se pasan los datos cada vez que se hace  una instancia a una clase
-    DATA(lr_empployee1) = NEW zcl_lab_03_emplyee_dnavas( i_employee = 'Employee 01' i_date = '01-01-2026' ).
-    lr_empployee1->get_employee_id(
-    IMPORTING
-      ex_employee_id = i_employee_id
-      ex_date        = i_date ).
-    out->write( |Empleado: { i_employee_id }\n| &&
-                |Fecha: { i_date }\n| ).
-*    out->write( zcl_lab_03_emplyee_dnavas=>l_log  ).
-
-    DATA(lr_empployee2) = NEW zcl_lab_03_emplyee_dnavas( i_employee = 'Employee 02' i_date = '31-12-2026' ).
-*    out->write( lr_empployee2->get_employee_id( )  ).
-*    out->write( zcl_lab_03_emplyee_dnavas=>l_log ).
+*    DATA i_employee_id TYPE string.
+*    DATA i_date TYPE string.
+**Los Constructores de instancia se pasan los datos cada vez que se hace  una instancia a una clase
+*    DATA(lr_empployee1) = NEW zcl_lab_03_emplyee_dnavas( i_employee = 'Employee 01' i_date = '01-01-2026' ).
+*    lr_empployee1->get_employee_id(
+*    IMPORTING
+*      ex_employee_id = i_employee_id
+*      ex_date        = i_date ).
+*    out->write( |Empleado: { i_employee_id }\n| &&
+*                |Fecha: { i_date }\n| ).
+**    out->write( zcl_lab_03_emplyee_dnavas=>l_log  ).
+*
+*    DATA(lr_empployee2) = NEW zcl_lab_03_emplyee_dnavas( i_employee = 'Employee 02' i_date = '31-12-2026' ).
+**    out->write( lr_empployee2->get_employee_id( )  ).
+**    out->write( zcl_lab_03_emplyee_dnavas=>l_log ).
 
 
 *Hago la impresión por pantalla para demostrar:
@@ -114,6 +114,105 @@ CLASS zcl_01_exec_dnavas IMPLEMENTATION.
 *    out->write( zcl_lab_03_emplyee_dnavas=>l_log ).
 *    out->write( lr_empployee1->get_employee_id( )  ).
 *    out->write( lr_empployee2->get_employee_id( )  ).
+
+*    out->write( zcl_lab_10_constructor_dnavas=>log ).
+*    DATA(lr_constructor1) = NEW zcl_lab_10_constructor_dnavas( i_cons = '01' ).
+*    out->write( zcl_lab_10_constructor_dnavas=>log ).
+*    DATA(lr_constructor2) = NEW zcl_lab_10_constructor_dnavas( i_cons = '02' ).
+*    out->write( zcl_lab_10_constructor_dnavas=>log ).
+*    DATA(lr_constructor3) = NEW zcl_lab_10_constructor_dnavas( i_cons = '03' ).
+*    out->write( zcl_lab_10_constructor_dnavas=>log ).
+
+
+*Prueba de Herencia:
+*La Clase Padre es la zcl_04_company_dnavas
+*Clase Hija zcl_04_centro_dnavas hereda todos los methods y atributos excepto los private section de zcl_04_company_dnavas
+*Clase Hija zcl_04_almacen_dnavas hereda todos los methods y  atributos excepto los private section de zcl_04_centro_dnavas(a la vez es padre de zcl_04_almacen_dnavas)
+*    DATA(lr_company) = NEW zcl_04_company_dnavas( i_ccompany = 'LOGALI' ).
+*    DATA(lr_centro)  = NEW zcl_04_centro_dnavas( i_ccompany = 'LOGALI' i_ccentro = 'C100' ).
+*    DATA(lr_almacen) = NEW zcl_04_almacen_dnavas( i_ccompany = 'LOGALI' i_ccentro = 'C100' i_almacen = 'A100' ).
+*
+*    lr_company->set_company( i_company =  'LOGALI COMPANY' ).
+*    lr_company->get_company( IMPORTING e_company = DATA(l_company)  ).
+*    lr_company->set_currency( i_currency =  'EUR' ).
+*    lr_company->get_currency( IMPORTING e_CURRENCY = DATA(l_CURRENCY)  ).
+*    OUt->write( |CLASE PADRE COMPANY zcl_04_company_dnavas -->Compañia { l_company }\n| &&
+*                |                                   Euro { l_currency } | ) .
+*
+*    lr_centro->set_company( i_company =  'LOGALI CENTRO' ).
+*    lr_centro->get_company( IMPORTING e_company = l_company  ).
+*    lr_centro->set_currency( i_currency =  'USD' ).
+*    lr_centro->get_currency( IMPORTING e_CURRENCY = l_CURRENCY  ).
+*    OUt->write( |CLASE HIJA CENTRO zcl_04_centro_dnavas hereda de zcl_04_company_dnavas-->Compañia { l_company }\n| &&
+*                |                                                                         Dólar { l_currency } | ) .
+*
+*    LR_ALMACEN->set_company( i_company =  'LOGALI ALMACEN' ).
+*    LR_ALMACEN->get_company( IMPORTING e_company = l_company  ).
+*    LR_ALMACEN->set_currency( i_currency =  'JPY' ).
+*    LR_ALMACEN->get_currency( IMPORTING e_CURRENCY = l_CURRENCY  ).
+*    OUt->write( |CLASE HIJA ALMACÉN zcl_04_almacen_dnavas hereda de zcl_04_centro_dnavas-->Compañia { l_company }\n| &&
+*                |                                                                           Yenes { l_currency } | ) .
+
+
+**Herencia de constrcutores y atributos
+*    lr_company->get_constructor_company( IMPORTING e_company = DATA(l_company) ).
+*    OUt->write( |CONSTRUCTOR PADRE zcl_04_company_dnavas-->Compañia:{ l_company } | ) .
+*
+*    CLEAR l_company.
+*    lr_centro->get_constructor_centro(
+*      IMPORTING
+*        e_company = l_company
+*        e_centro  = DATA(l_centro) ).
+*    OUt->write( |CLASE HIJA CENTRO zcl_04_centro_dnavas hereda de zcl_04_company_dnavas-->Compañia:{ l_company }-Centro:{ l_centro } | ) .
+*
+*    CLEAR l_company.
+*    CLEAR l_centro.
+*    lr_almacen->get_constructor_almacen(
+*      IMPORTING
+*        e_company = l_company
+*        e_centro  = l_centro
+*        e_almacen = DATA(l_almacen)
+*    ).
+*    OUt->write( |CLASE HIJA ALMACÉN zcl_04_almacen_dnavas hereda de zcl_04_centro_dnavas-->Compañia:{ l_company }-Centro:{ l_centro }-Almacén:{ l_almacen }| ) .
+
+
+    DATA(lr_animal) = NEW zcl_05_animal_dnavas( ).
+    DATA(lr_leon)   = NEW zcl_05_leon_dnavas( ).
+*
+*    out->write( lr_animal->caminar( ) ).
+*    out->write( lr_leon->caminar( ) ).
+
+*Narrowing Casting:
+*Significa que apunta de referencia de la instancia de la Clase PADRE->HIJO( clase hijo)
+*Ejemplo: un ANIMAL puede ser un LEON
+*Esto sirve por si en un method hijo hemos redifinido el method que la instancia de la clase PADRE pueda utilizarla
+    out->write( |\n| ).
+    lr_animal = lr_leon."Narrowing Casting
+    out->write(  |Narrowing Casting| ).
+    out->write( lr_animal->caminar( ) ).
+    out->write( lr_leon->caminar( ) ).
+
+    DATA wa_animales TYPE REF TO zcl_05_animal_dnavas.
+    DATA lt_animales TYPE TABLE OF REF TO zcl_05_animal_dnavas.
+
+    " 1. Instancias la clase usando '#' (ABAP ya sabe que '#' significa 'zcl_05_animal_dnavas' por el DATA de arriba)
+    wa_animales = NEW #( ).
+
+    APPEND wA_animales  TO lt_animales .
+
+    LOOP AT lt_animales INTO wa_animales.
+
+    ENDLOOP.
+
+*Widening Casting: SOLO SE PUEDE HACER SI ANTES SE HA HECHO UN NARROWING CASTING
+*Significa que apunta de referencia de la instancia de la Clase PADRE->HIJO( clase hijo)
+*Ejemplo: pero un LEON puede ser un ANIMAL. Si porque hemos heredado los meotodos y atributos
+*Esto sirve por si en un method hijo hemos redifinido el method que la instancia de la clase PADRE pueda utilizarla
+*    out->write( |\n| ).
+*    lr_leon ?= lr_animal."Widening  Casting
+*    out->write(  |Widening Casting| ).
+*    out->write( lr_animal->caminar( ) ).
+*    out->write( lr_leon->caminar( ) ).
 
   ENDMETHOD.
 ENDCLASS.
