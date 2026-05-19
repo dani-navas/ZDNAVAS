@@ -3,7 +3,9 @@
   FINAL
   CREATE PUBLIC .
       PUBLIC SECTION.
-        METHODS caminar REDEFINITION.
+        METHODS caminar REDEFINITION .
+
+        METHODS rugir RETURNING VALUE(r_rugir) TYPE string.
       PROTECTED SECTION.
       PRIVATE SECTION.
     ENDCLASS.
@@ -12,4 +14,8 @@
       METHOD caminar.
         r_valor = 'El león camina....'.
       ENDMETHOD.
+      METHOD rugir.
+        r_rugir = 'Grrrr...!'.
+      ENDMETHOD.
+
     ENDCLASS.

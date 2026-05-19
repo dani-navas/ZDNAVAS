@@ -178,41 +178,40 @@ CLASS zcl_01_exec_dnavas IMPLEMENTATION.
 
     DATA(lr_animal) = NEW zcl_05_animal_dnavas( ).
     DATA(lr_leon)   = NEW zcl_05_leon_dnavas( ).
-*
 *    out->write( lr_animal->caminar( ) ).
 *    out->write( lr_leon->caminar( ) ).
 
-*Narrowing Casting:
+*Narrowing Casting (UP CAST):APUNTA DEL PADRE->HIJO
 *Significa que apunta de referencia de la instancia de la Clase PADRE->HIJO( clase hijo)
 *Ejemplo: un ANIMAL puede ser un LEON
 *Esto sirve por si en un method hijo hemos redifinido el method que la instancia de la clase PADRE pueda utilizarla
     out->write( |\n| ).
-    lr_animal = lr_leon."Narrowing Casting
+    lr_animal = lr_leon."Narrowing Casting IMPORTANTE!!: NO ESTA IGUALANDO! Esta apuntando la instancia(PADRE) -> instancia(HIJO)
+    "significa que cuando se ejecute el method caminar de la instancia padre como hemos hecho apuntar al HIJO se ejecutara
+    "el method redifinido en la instancia de la clase HIJA
     out->write(  |Narrowing Casting| ).
     out->write( lr_animal->caminar( ) ).
     out->write( lr_leon->caminar( ) ).
 
-    DATA wa_animales TYPE REF TO zcl_05_animal_dnavas.
-    DATA lt_animales TYPE TABLE OF REF TO zcl_05_animal_dnavas.
 
-    " 1. Instancias la clase usando '#' (ABAP ya sabe que '#' significa 'zcl_05_animal_dnavas' por el DATA de arriba)
-    wa_animales = NEW #( ).
+*Widening Casting (DOWN CAST):APUNTA DEL HIJO->PADRE SOLO SE PUEDE HACER SI ANTES SE HA HECHO UN NARROWING CASTING sino sale error CX_SY_MOVE_CAST_ERROR
+*Cuando vamos del HIJO->PADRE, hay que poner "?="
+*Significa que apunta de referencia de la instancia de la Clase HIJO->PADRE
+*En este paso como el mas especifico siempre va a ser el el hijo por eso acaba ejecutnado al hijo
+    out->write( |\n| ).
+*Porque estamos intentado hacer un widening casting sin tener un narrowing casting
+*Excepción!
+    TRY.
+        lr_leon ?= lr_animal."Widening  Casting IMPORTANTE!!: NO ESTA IGUALANDO! Esta apuntando la instancia(HIJO) -> instancia(PADRE)
+        " da error porque la instancia HIJA no puede apuntar al PADRE
+      CATCH cx_sy_move_cast_error."CLASE ERROR
+        out->write( 'Error en Widening Cating' ).
+        RETURN  .
+    ENDTRY.
 
-    APPEND wA_animales  TO lt_animales .
-
-    LOOP AT lt_animales INTO wa_animales.
-
-    ENDLOOP.
-
-*Widening Casting: SOLO SE PUEDE HACER SI ANTES SE HA HECHO UN NARROWING CASTING
-*Significa que apunta de referencia de la instancia de la Clase PADRE->HIJO( clase hijo)
-*Ejemplo: pero un LEON puede ser un ANIMAL. Si porque hemos heredado los meotodos y atributos
-*Esto sirve por si en un method hijo hemos redifinido el method que la instancia de la clase PADRE pueda utilizarla
-*    out->write( |\n| ).
-*    lr_leon ?= lr_animal."Widening  Casting
-*    out->write(  |Widening Casting| ).
-*    out->write( lr_animal->caminar( ) ).
-*    out->write( lr_leon->caminar( ) ).
+    out->write(  |Widening Casting| ).
+    out->write( lr_animal->caminar( ) ).
+    out->write( lr_leon->caminar( ) ).
 
   ENDMETHOD.
 ENDCLASS.
