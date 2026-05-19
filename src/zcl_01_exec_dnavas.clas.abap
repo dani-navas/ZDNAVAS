@@ -176,8 +176,8 @@ CLASS zcl_01_exec_dnavas IMPLEMENTATION.
 *    OUt->write( |CLASE HIJA ALMACÉN zcl_04_almacen_dnavas hereda de zcl_04_centro_dnavas-->Compañia:{ l_company }-Centro:{ l_centro }-Almacén:{ l_almacen }| ) .
 
 
-    DATA(lr_animal) = NEW zcl_05_animal_dnavas( ).
-    DATA(lr_leon)   = NEW zcl_05_leon_dnavas( ).
+*    DATA(lr_animal) = NEW zcl_05_animal_dnavas( ).
+*    DATA(lr_leon)   = NEW zcl_05_leon_dnavas( ).
 *    out->write( lr_animal->caminar( ) ).
 *    out->write( lr_leon->caminar( ) ).
 
@@ -185,33 +185,61 @@ CLASS zcl_01_exec_dnavas IMPLEMENTATION.
 *Significa que apunta de referencia de la instancia de la Clase PADRE->HIJO( clase hijo)
 *Ejemplo: un ANIMAL puede ser un LEON
 *Esto sirve por si en un method hijo hemos redifinido el method que la instancia de la clase PADRE pueda utilizarla
-    out->write( |\n| ).
-    lr_animal = lr_leon."Narrowing Casting IMPORTANTE!!: NO ESTA IGUALANDO! Esta apuntando la instancia(PADRE) -> instancia(HIJO)
-    "significa que cuando se ejecute el method caminar de la instancia padre como hemos hecho apuntar al HIJO se ejecutara
-    "el method redifinido en la instancia de la clase HIJA
-    out->write(  |Narrowing Casting| ).
-    out->write( lr_animal->caminar( ) ).
-    out->write( lr_leon->caminar( ) ).
+*    out->write( |\n| ).
+*    lr_animal = lr_leon."Narrowing Casting IMPORTANTE!!: NO ESTA IGUALANDO! Esta apuntando la instancia(PADRE) -> instancia(HIJO)
+*    "significa que cuando se ejecute el method caminar de la instancia padre como hemos hecho apuntar al HIJO se ejecutara
+*    "el method redifinido en la instancia de la clase HIJA
+*    out->write(  |Narrowing Casting| ).
+*    out->write( lr_animal->caminar( ) ).
+*    out->write( lr_leon->caminar( ) ).
 
 
 *Widening Casting (DOWN CAST):APUNTA DEL HIJO->PADRE SOLO SE PUEDE HACER SI ANTES SE HA HECHO UN NARROWING CASTING sino sale error CX_SY_MOVE_CAST_ERROR
 *Cuando vamos del HIJO->PADRE, hay que poner "?="
 *Significa que apunta de referencia de la instancia de la Clase HIJO->PADRE
 *En este paso como el mas especifico siempre va a ser el el hijo por eso acaba ejecutnado al hijo
-    out->write( |\n| ).
+*    out->write( |\n| ).
 *Porque estamos intentado hacer un widening casting sin tener un narrowing casting
 *Excepción!
-    TRY.
-        lr_leon ?= lr_animal."Widening  Casting IMPORTANTE!!: NO ESTA IGUALANDO! Esta apuntando la instancia(HIJO) -> instancia(PADRE)
-        " da error porque la instancia HIJA no puede apuntar al PADRE
-      CATCH cx_sy_move_cast_error."CLASE ERROR
-        out->write( 'Error en Widening Cating' ).
-        RETURN  .
-    ENDTRY.
+*    TRY.
+*        lr_leon ?= lr_animal."Widening  Casting IMPORTANTE!!: NO ESTA IGUALANDO! Esta apuntando la instancia(HIJO) -> instancia(PADRE)
+*        " da error porque la instancia HIJA no puede apuntar al PADRE
+*      CATCH cx_sy_move_cast_error."CLASE ERROR
+*        out->write( 'Error en Widening Cating' ).
+*        RETURN  .
+*    ENDTRY.
+*
+*    out->write(  |Widening Casting| ).
+*    out->write( lr_animal->caminar( ) ).
+*    out->write( lr_leon->caminar( ) ).
+*--------
 
-    out->write(  |Widening Casting| ).
-    out->write( lr_animal->caminar( ) ).
-    out->write( lr_leon->caminar( ) ).
+**Llamando los metodos de la interface
+*    DATA(lo_agency) = NEW zcl_agency_dnavas( ).
+*    lo_agency->zif_agency_dnavas~set_agency( i_agency = 'LOGALI AGENCY' ).
+*    out->write( lo_agency->zif_agency_dnavas~get_agency( ) ).
+*    zcl_agency_dnavas=>zif_agency_dnavas~set_adress( i_adress = 'C/ Valencia, 46 3-A' ).
+
+*Multiple interfaces
+*    data(lo_unit) = new zcl_unidad_medida_dnavas( ).
+*    data l_unit type zfloat_arb VALUE 23.
+*    lo_unit->set_unit( i_unit = l_unit ) .
+*    out->write(  | Metros: { l_unit } | ).
+*    out->write( | Conversor a centimetros: { lo_unit->zif_ue_unit_dnavas~conversor_ue_unit_centrimetros( ) } |  ).
+*    out->write( | Conversor a pulgadas: {  lo_unit->zif_en_unit_dnavas~conversor_en_unit_pulgadas( ) } | ).
+
+*Interfaces Anidadas
+    data(lo_centro_almacen) = new zcl_centro_almacen_dnavas( ).
+    lo_centro_almacen->zif_centro_dnavas~set_centro( i_centro = 'C100' ).
+*Ahora se utiliza el ALIAS "almacen"
+    lo_centro_almacen->zif_centro_dnavas~almacen(
+      EXPORTING
+
+        i_almacen = 'A100'
+      IMPORTING
+        e_value   = DATA(E_VALUE)
+    ).
+    OUT->write( E_VALUE ).
 
   ENDMETHOD.
 ENDCLASS.
