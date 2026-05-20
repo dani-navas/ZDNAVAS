@@ -228,18 +228,51 @@ CLASS zcl_01_exec_dnavas IMPLEMENTATION.
 *    out->write( | Conversor a centimetros: { lo_unit->zif_ue_unit_dnavas~conversor_ue_unit_centrimetros( ) } |  ).
 *    out->write( | Conversor a pulgadas: {  lo_unit->zif_en_unit_dnavas~conversor_en_unit_pulgadas( ) } | ).
 
-*Interfaces Anidadas
-    data(lo_centro_almacen) = new zcl_centro_almacen_dnavas( ).
-    lo_centro_almacen->zif_centro_dnavas~set_centro( i_centro = 'C100' ).
-*Ahora se utiliza el ALIAS "almacen"
-    lo_centro_almacen->zif_centro_dnavas~almacen(
-      EXPORTING
+**Interfaces Anidadas
+*    data(lo_centro_almacen) = new zcl_centro_almacen_dnavas( ).
+*    lo_centro_almacen->zif_centro_dnavas~set_centro( i_centro = 'C100' ).
+**Ahora se utiliza el ALIAS "almacen"
+*    lo_centro_almacen->zif_centro_dnavas~almacen(
+*      EXPORTING
+*
+*        i_almacen = 'A100'
+*      IMPORTING
+*        e_value   = DATA(E_VALUE)
+*    ).
+*    OUT->write( E_VALUE ).
 
-        i_almacen = 'A100'
-      IMPORTING
-        e_value   = DATA(E_VALUE)
-    ).
-    OUT->write( E_VALUE ).
+*Poliformismo con clases abstractas
+*    DATA gt_avion TYPE STANDARD TABLE OF REF TO zcl_avion_dnavas.
+*    DATA go_avion    TYPE REF TO zcl_avion_dnavas.
+*    DATA go_pasajero TYPE REF TO zcl_avion_pasajero_dnavas.
+*    DATA go_militar  TYPE REF TO zcl_avion_militar_dnavas.
+*
+*    go_pasajero = NEW #( ).
+*    APPEND go_pasajero TO gt_avion.
+*    go_militar = NEW #( ).
+*    APPEND go_militar TO gt_avion.
+*
+*    LOOP AT gt_avion INTO go_avion.
+*      out->write( go_avion->velocidad_avion( ) ).
+*    ENDLOOP.
+
+*Poliformismo con Interfaces
+    DATA gt_company TYPE STANDARD TABLE OF REF TO zif_company_dnavas.
+    DATA go_company TYPE REF TO zif_company_dnavas.
+    DATA go_company_eu TYPE REF TO zcl_company_eu_dnavas.
+    DATA go_company_usa TYPE REF TO zcl_company_usa_dnavas.
+    DATA go_fabrica TYPE REF TO zcl_fabrica_dnavas.
+
+
+    go_company_eu = NEW #( ).
+    APPEND go_company_eu TO gt_company.
+    go_company_usa = NEW #( ).
+    APPEND go_company_usa TO gt_company.
+    go_fabrica = new #( ).
+
+    LOOP AT gt_company INTO go_company.
+     out->write( go_fabrica->asignar_fabrica( go_company ) ).
+    ENDLOOP.
 
   ENDMETHOD.
 ENDCLASS.
