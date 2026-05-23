@@ -25,7 +25,7 @@ CLASS zcl_04_centro_dnavas IMPLEMENTATION.
   METHOD constructor.
     super->constructor( i_ccompany = i_ccompany ).
     me->l_ccentro = i_ccentro.
-  ENDMETHOD.
+   ENDMETHOD.
 
   METHOD get_constructor_centro.
     e_company = me->l_ccompany.
