@@ -1,0 +1,18 @@
+CLASS zcl_empleado_dnavas DEFINITION ABSTRACT
+  PUBLIC
+*  FINAL
+  CREATE PUBLIC .
+
+  PUBLIC SECTION.
+
+    METHODS get_trabajo ABSTRACT  RETURNING VALUE(r_value) type string.
+
+  PROTECTED SECTION.
+  PRIVATE SECTION.
+
+ENDCLASS.
+
+
+
+CLASS zcl_empleado_dnavas IMPLEMENTATION.
+ENDCLASS.
