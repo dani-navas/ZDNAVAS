@@ -294,22 +294,85 @@ CLASS zcl_01_exec_dnavas IMPLEMENTATION.
 *    ENDLOOP.
 
 
-*Asociacion
-    DATA(lo_credit_card) = NEW zcl_credit_card_dnavas( ).
-    DATA(lo_cliente) = NEW zcl_cliente_dnavas( ).
+**Asociacion
+*    DATA(lo_credit_card) = NEW zcl_credit_card_dnavas( ).
+*    DATA(lo_cliente) = NEW zcl_cliente_dnavas( ).
+*
+*    lo_credit_card->set_credit_card( i_credit_card = 'ES1234-5678-4321-9876' ).
+*    LO_CLIENTE->set_credit_card_cliente( i_credit_card = lo_credit_card ).
+*    OUT->WRITE( lo_cliente->get_credit_card_cliente( )->GET_CREDIT_CARD( ) ).
+*
+**Composición: dentro de la clase coche estoy referenciando el i_motor a la clase motor que
+**ya he informado el atributo motor
+*    DATA(lo_motor) = NEW zcl_motor_dnavas( ).
+*    DATA(lo_coche) = NEW zcl_COCHE_dnavas( ).
+*
+*    lo_motor->set_motor( i_motor = 'Tesla Model S 200Nw' ).
+*    lo_coche->get_motor( EXPORTING i_motor =  lo_motor  RECEIVING r_value = DATA(r_value)  ).
+*    out->write(  r_value ).
 
-    lo_credit_card->set_credit_card( i_credit_card = 'ES1234-5678-4321-9876' ).
-    LO_CLIENTE->set_credit_card_cliente( i_credit_card = lo_credit_card ).
-    OUT->WRITE( lo_cliente->get_credit_card_cliente( )->GET_CREDIT_CARD( ) ).
 
-*Composición: dentro de la clase coche estoy referenciando el i_motor a la clase motor que
-*ya he informado el atributo motor
-    DATA(lo_motor) = NEW zcl_motor_dnavas( ).
-    DATA(lo_coche) = NEW zcl_COCHE_dnavas( ).
+*Eventos
+*
+*    DATA(lo_timer) = NEW zcl_timer_dnavas( ).
+*    DATA(lo_conexion) = NEW zcl_conexion_tiempo_dnavas( ).
+*
+*    SET HANDLER lo_conexion->handler_zcl_timer FOR lo_timer.
+*
+*    DO.
+*      WAIT UP TO 1 SECONDS.
+*      lo_timer->incrementar_hora( i_hora = 1 ).
+*      IF lo_conexion->l_hora IS INITIAL.
+*        out->write( |Evento NO levantado: { cl_abap_context_info=>get_system_time( ) }, no levanto el evento no puede recuperar los atributos por el SENDER con usuario: { lo_conexion->l_username }  | ).
+*      ELSE.
+*        out->write( |Evento SI levantado: { lo_conexion->l_hora }, levanto el evento puedo recuperar el atributo con SNEDER, Usuario: { lo_conexion->l_username }  | ).
+*        EXIT.
+*      ENDIF.
+*    ENDDO.
 
-    lo_motor->set_motor( i_motor = 'Tesla Model S 200Nw' ).
-    lo_coche->get_motor( EXPORTING i_motor =  lo_motor  RECEIVING r_value = DATA(r_value)  ).
-    out->write(  r_value ).
+
+**Evento con Interface
+    DATA(lo_banco_ue) = NEW zcl_banco_ue_dnavas( ).
+    DATA(lo_banco_cliente) = NEW zcl_banco_cliente_dnavas( ).
+
+    SET HANDLER lo_banco_cliente->on_notificacion FOR lo_banco_ue.
+*
+    DO 5 TIMES.
+      WAIT UP TO 1 SECONDS.
+      lo_banco_cliente->transferencias( r_iban = 1   ).
+      lo_banco_ue->notificar( ) . "LEVANTO EL EVENTO
+      out->write( lo_banco_cliente->notificacion ) .
+
+      if sy-index = 3.
+            set HANDLER lo_banco_cliente->on_notificacion for lo_banco_ue ACTIVATION abap_false.
+            lo_banco_cliente->notificacion  = 'Evento desactivado' .
+      endif.
+    ENDDO.
+
+
+*Evento Estatico
+*    SET HANDLER zcl_smtp_dnavas=>on_new_email.
+*
+*    DO 5 TIMES.
+*      WAIT UP TO 1 SECONDS.
+*      zcl_mail_dnavas=>evento_mail( ).
+*    ENDDO.
+*    out->write( zcl_smtp_dnavas=>mt_mail ).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
   ENDMETHOD.
